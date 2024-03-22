@@ -32,4 +32,36 @@ public class User extends AuditingFields {
     @Column(nullable = false)
     private UserEnum role; // ADMIN, USER
 
+    @Column(nullable = false, length = 50)
+    private String realname;
+
+    @Column(length = 50)
+    private String job;
+
+    @Column(length = 20)
+    private String sex;
+
+    @Column(length = 50)
+    private String instagramId;
+
+    @Column(length = 5)
+    private String age;
+
+    @Column(length = 200)
+    private String comment;
+
+    public User(
+            Long id,
+            String username, String password, UserEnum role, String realname, String job, String sex,
+                String instagramId, String age, String comment) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.realname = realname;
+        this.job = job;
+        this.sex = sex;
+        this.instagramId = instagramId;
+        this.age = age;
+        this.comment = comment;
+    }
 }

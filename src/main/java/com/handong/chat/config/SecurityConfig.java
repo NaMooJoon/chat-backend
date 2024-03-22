@@ -1,6 +1,7 @@
 package com.handong.chat.config;
 
 import com.handong.chat.domain.user.UserEnum;
+import com.handong.chat.util.CustomResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,10 +40,9 @@ public class SecurityConfig {
         // httpBasic: allows the browser to authenticate using a pop-up window. (disable)
         http.httpBasic(httpBasic -> httpBasic.disable());
 
-        // Exceptions
+        // Catching Exceptions
         http.exceptionHandling(e -> e.authenticationEntryPoint((request, response, authException) -> {
-            response.setStatus(403);
-            response.getWriter().println("error");
+            CustomResponseUtil.unAuthentication(response, "Please login first...");
         }));
 
         // https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html

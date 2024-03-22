@@ -1,7 +1,9 @@
 package com.handong.chat.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,5 +28,8 @@ class SecurityConfigTest {
 
         System.out.println("responseBody = " + responseBody);
         System.out.println("httpStatusCode = " + httpStatusCode);
+
+        // then
+        assertThat(httpStatusCode).isEqualTo(401);
     }
 }

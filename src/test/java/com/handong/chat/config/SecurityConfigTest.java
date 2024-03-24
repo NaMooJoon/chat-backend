@@ -31,4 +31,5 @@ class SecurityConfigTest {
         // then
         assertThat(httpStatusCode).isEqualTo(401);
     }
+
 }

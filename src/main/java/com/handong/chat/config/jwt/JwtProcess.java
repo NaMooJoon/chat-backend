@@ -32,7 +32,7 @@ public class JwtProcess {
     }
 
     public LoginUser verifyAccessToken(String accessToken) {
-        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(properties.getSecretKey()))
+        DecodedJWT decodedJWT = JWT.require(getTokenAlgorithm())
                 .build().verify(accessToken);
         Long id = decodedJWT.getClaim("id").asLong();
         String role = decodedJWT.getClaim("role").asString();

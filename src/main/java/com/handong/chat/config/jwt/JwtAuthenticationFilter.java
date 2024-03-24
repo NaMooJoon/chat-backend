@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
+        log.debug("/api/login => start the Authentication");
         try {
             ObjectMapper om = new ObjectMapper();
             LoginRequestDto loginReqDto = om.readValue(request.getInputStream(), LoginRequestDto.class);

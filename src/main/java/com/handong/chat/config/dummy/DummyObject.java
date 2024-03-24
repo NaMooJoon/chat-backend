@@ -15,18 +15,21 @@ public class DummyObject {
                 .password(encPassword)
                 .role(UserEnum.USER)
                 .realname(realname)
+                .deleted("N")
                 .build();
     }
 
-    protected User newMockUser(String username, String realname) {
+    protected User newMockUser(Long id, String username, String realname, UserEnum role) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encPassword = passwordEncoder.encode("1234");
 
         return User.builder()
+                .id(id)
                 .username(username)
                 .password(encPassword)
-                .role(UserEnum.USER)
+                .role(role)
                 .realname(realname)
+                .deleted("N")
                 .build();
     }
 }

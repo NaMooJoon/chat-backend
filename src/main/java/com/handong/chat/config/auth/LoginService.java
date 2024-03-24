@@ -19,7 +19,7 @@ public class LoginService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new InternalAuthenticationServiceException(username + " : authentication is failed"));
+                .orElseThrow(() -> new InternalAuthenticationServiceException("User(" + username + ") : authentication is failed"));
         return new LoginUser(user);
     }
 }

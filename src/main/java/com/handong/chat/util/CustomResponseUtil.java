@@ -12,7 +12,7 @@ public class CustomResponseUtil {
     public static void success(HttpServletResponse response, String message, Object dto) {
         try {
             ObjectMapper om = new ObjectMapper();
-            ResponseDto<?> responseDto = new ResponseDto<>(1, message, null);
+            ResponseDto<?> responseDto = new ResponseDto<>(1, message, dto);
             String responseBody = om.writeValueAsString(responseDto);
 
             response.setContentType("application/json; charset=utf-8");

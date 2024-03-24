@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import com.handong.chat.config.dummy.DummyObject;
 import com.handong.chat.domain.user.User;
+import com.handong.chat.domain.user.UserEnum;
 import com.handong.chat.dto.user.UserRequestDto.JoinRequestDto;
 import com.handong.chat.dto.user.UserResponseDto.JoinResponseDto;
 import com.handong.chat.repository.UserRepository;
@@ -51,7 +52,7 @@ class UserServiceTest extends DummyObject {
         when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
 
         // stub 2
-        User testUser = newMockUser(username, realname);
+        User testUser = newMockUser(1L, username, realname, UserEnum.USER);
         when(userRepository.save(any())).thenReturn(testUser);
 
         // when

@@ -50,9 +50,9 @@ public class User extends AuditingFields {
     private String comment;
 
     @Builder
-    public User(Long id, String username, String password, UserEnum role, String realname, String job, String sex,
-                String instagramId, String age, String comment) {
-        super(id);
+    public User(Long id, String deleted, String username, String password, UserEnum role, String realname, String job,
+                String sex, String instagramId, String age, String comment) {
+        super(id, deleted);
         this.username = username;
         this.password = password;
         this.role = role;

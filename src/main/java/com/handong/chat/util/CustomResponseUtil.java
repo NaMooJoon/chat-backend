@@ -9,14 +9,28 @@ import org.springframework.http.HttpStatus;
 @Slf4j
 public class CustomResponseUtil {
 
-    public static void unAuthentication(HttpServletResponse response, String msg) {
+    public static void success(HttpServletResponse response, String message, Object dto) {
+        try {
+            ObjectMapper om = new ObjectMapper();
+            ResponseDto<?> responseDto = new ResponseDto<>(1, message, null);
+            String responseBody = om.writeValueAsString(responseDto);
+
+            response.setContentType("application/json; charset=utf-8");
+            response.setStatus(HttpStatus.OK.value());
+            response.getWriter().println(responseBody);
+        } catch (Exception e) {
+            log.error("Server parsing error...");
+        }
+    }
+
+    public static void fail(HttpServletResponse response, String msg, HttpStatus httpStatus) {
         try {
             ObjectMapper om = new ObjectMapper();
             ResponseDto<?> responseDto = new ResponseDto<>(-1, msg, null);
             String responseBody = om.writeValueAsString(responseDto);
 
             response.setContentType("application/json; charset=utf-8");
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setStatus(httpStatus.value());
             response.getWriter().println(responseBody);
         } catch (Exception e) {
             log.error("Server parsing error...");

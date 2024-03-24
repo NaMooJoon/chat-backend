@@ -10,9 +10,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class UserRequestDto {
+
+    @Getter
+    @Setter
+    public static class LoginRequestDto {
+        private String username;
+        private String password;
+    }
+
     @Schema
     @Getter
     @Builder

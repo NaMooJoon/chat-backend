@@ -10,7 +10,6 @@ import com.handong.chat.dto.user.UserRequestDto.JoinRequestDto;
 import com.handong.chat.dto.user.UserResponseDto.JoinResponseDto;
 import com.handong.chat.repository.UserRepository;
 import java.util.Optional;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

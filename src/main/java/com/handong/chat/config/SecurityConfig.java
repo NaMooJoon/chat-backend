@@ -1,11 +1,18 @@
 package com.handong.chat.config;
 
+import com.handong.chat.config.jwt.ExternalProperties;
+import com.handong.chat.config.jwt.JwtAuthenticationFilter;
+import com.handong.chat.config.jwt.JwtProcess;
 import com.handong.chat.domain.user.UserEnum;
 import com.handong.chat.util.CustomResponseUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -14,8 +21,12 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Slf4j
+@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
+
+    private final ExternalProperties properties;
+    private final JwtProcess jwtProcess;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -23,6 +34,15 @@ public class SecurityConfig {
     }
 
     // TODO: Add Jwt filter
+    public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
+        @Override
+        public void configure(HttpSecurity builder) throws Exception {
+            AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
+            builder.addFilter(new JwtAuthenticationFilter(authenticationManager, properties, jwtProcess));
+            // TODO: ADD authorization
+            super.configure(builder);
+        }
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -42,7 +62,7 @@ public class SecurityConfig {
 
         // Catching Exceptions
         http.exceptionHandling(e -> e.authenticationEntryPoint((request, response, authException) -> {
-            CustomResponseUtil.unAuthentication(response, "Please login first...");
+            CustomResponseUtil.fail(response, "Please login first...", HttpStatus.UNAUTHORIZED);
         }));
 
         // https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html

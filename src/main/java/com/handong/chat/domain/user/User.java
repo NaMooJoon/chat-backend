@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
-@Builder
 @NoArgsConstructor // When JPA creates new entity, it makes the entity from no args constructor.
 @AllArgsConstructor // for '@Builder' annotation.
 @EntityListeners(AuditingEntityListener.class)
@@ -50,10 +49,10 @@ public class User extends AuditingFields {
     @Column(length = 200)
     private String comment;
 
-    public User(
-            Long id,
-            String username, String password, UserEnum role, String realname, String job, String sex,
+    @Builder
+    public User(Long id, String username, String password, UserEnum role, String realname, String job, String sex,
                 String instagramId, String age, String comment) {
+        super(id);
         this.username = username;
         this.password = password;
         this.role = role;

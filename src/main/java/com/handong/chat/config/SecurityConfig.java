@@ -2,6 +2,7 @@ package com.handong.chat.config;
 
 import com.handong.chat.config.jwt.ExternalProperties;
 import com.handong.chat.config.jwt.JwtAuthenticationFilter;
+import com.handong.chat.config.jwt.JwtAuthorizationFilter;
 import com.handong.chat.config.jwt.JwtProcess;
 import com.handong.chat.domain.user.UserEnum;
 import com.handong.chat.util.CustomResponseUtil;
@@ -33,20 +34,18 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // TODO: Add Jwt filter
     public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
         @Override
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
             builder.addFilter(new JwtAuthenticationFilter(authenticationManager, properties, jwtProcess));
-            // TODO: ADD authorization
+            builder.addFilter(new JwtAuthorizationFilter(authenticationManager, properties, jwtProcess));
             super.configure(builder);
         }
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        log.debug("filter chain successfully enrolled.");
 
         http.headers(header -> header
                 .frameOptions(frameOption -> frameOption.disable())); // No permit iframe.
@@ -60,17 +59,26 @@ public class SecurityConfig {
         // httpBasic: allows the browser to authenticate using a pop-up window. (disable)
         http.httpBasic(httpBasic -> httpBasic.disable());
 
+        // Custom filter
+        http.apply(new CustomSecurityFilterManager());
+
         // Catching Exceptions
         http.exceptionHandling(e -> e.authenticationEntryPoint((request, response, authException) -> {
             CustomResponseUtil.fail(response, "Please login first...", HttpStatus.UNAUTHORIZED);
         }));
 
-        // https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html
-        http.authorizeRequests()
-                .requestMatchers("/api/user/**").authenticated()
-                .requestMatchers("/api/admin/**").hasRole("" + UserEnum.ADMIN)
-                .anyRequest().permitAll();
+        http.exceptionHandling(e -> e.accessDeniedHandler((request, response, accessDeniedException) -> {
+            CustomResponseUtil.fail(response, "Access denied...", HttpStatus.FORBIDDEN);
+        }));
 
+        // https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html
+        http.authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/api/user/**").authenticated()
+                .requestMatchers("/api/admin/**").hasRole(UserEnum.ADMIN + "")
+                .anyRequest().permitAll()
+        );
+
+        log.debug("filter chain successfully enrolled.");
         return http.build();
     }
 

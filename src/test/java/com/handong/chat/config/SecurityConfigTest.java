@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -21,7 +22,7 @@ class SecurityConfigTest {
     @Test
     void authentication_test() throws Exception {
         // when
-        ResultActions resultActions = mvc.perform(get("/api/user/hello"));
+        ResultActions resultActions = mvc.perform(get("/api/admin/hello"));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         int httpStatusCode = resultActions.andReturn().getResponse().getStatus();
 
@@ -29,7 +30,7 @@ class SecurityConfigTest {
         System.out.println("httpStatusCode = " + httpStatusCode);
 
         // then
-        assertThat(httpStatusCode).isEqualTo(401);
+        assertThat(httpStatusCode).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
 }

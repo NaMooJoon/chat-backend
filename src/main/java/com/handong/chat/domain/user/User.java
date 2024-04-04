@@ -11,9 +11,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
+@Setter
 @NoArgsConstructor // When JPA creates new entity, it makes the entity from no args constructor.
 @AllArgsConstructor // for '@Builder' annotation.
 @EntityListeners(AuditingEntityListener.class)

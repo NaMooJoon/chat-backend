@@ -2,9 +2,8 @@ package com.handong.chat.controller;
 
 import com.handong.chat.dto.ResponseDto;
 import com.handong.chat.service.UserService;
-import com.handong.chat.dto.user.UserRequestDto.JoinRequestDto;
-import com.handong.chat.dto.user.UserResponseDto.JoinResponseDto;
-import com.handong.chat.dto.user.UserResponseDto.DetailResponseDto;
+import com.handong.chat.dto.user.UserRequestDto.*;
+import com.handong.chat.dto.user.UserResponseDto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -54,5 +53,21 @@ public class UserController {
     public ResponseEntity<?> detail(@PathVariable("id") Long id) {
         DetailResponseDto detailResDto = userService.detail(id);
         return new ResponseEntity<>(new ResponseDto<>(1, "User detail", detailResDto), HttpStatus.OK);
+    }
+
+    @Operation(summary = "회원 정보 수정",
+            description = "회원 정보 수정을 위한 컨트롤러 (USER 권한 필요) <br />"
+                    + "@param UpdateRequestDto <br />"
+                    + "@return HttpStatus.OK(200) ResponseEntity\\<UpdateResponseDto\\> <br />"
+                    + "@exception 정보 없음 <br />")
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/update")
+    public ResponseEntity<?> update(@RequestBody @Valid UpdateRequestDto updateRequestDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest()
+                    .body(new ResponseDto<>(-1, "Validation errors", bindingResult.getAllErrors()));
+        }
+        UpdateResponseDto updateResDto = userService.update(updateRequestDto);
+        return new ResponseEntity<>(new ResponseDto<>(1, "Update success", updateResDto), HttpStatus.OK);
     }
 }

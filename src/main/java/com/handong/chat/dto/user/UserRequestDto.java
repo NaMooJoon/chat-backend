@@ -78,4 +78,25 @@ public class UserRequestDto {
                     .build();
         }
     }
+
+    @Getter
+    @Builder
+    public static class UpdateRequestDto {
+        @Schema(description = "user id", example = "id")
+        private Long id;
+        @Schema(description = "real name", example="Jack")
+        private String realname;
+        @Schema(description = "job", example="student")
+        private String job;
+        @Schema(description = "sex", example="male")
+        private String sex;
+        @Schema(description = "instargram id", example="@dkdjf")
+        private String instagramId;
+        @Schema(description = "age", example="25")
+        private String age;
+        @Schema(description = "introduce user self", example="Hello, ...")
+        private String comment;
+        @Schema(description = "삭제 여부", example="Y")
+        private String deleted;
+    }
 }

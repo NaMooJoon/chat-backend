@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.handong.chat.config.dummy.DummyObject;
 import com.handong.chat.dto.user.UserRequestDto.JoinRequestDto;
+import com.handong.chat.dto.user.UserRequestDto.UpdateRequestDto;
 import com.handong.chat.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -103,7 +104,7 @@ class UserControllerTest extends DummyObject {
 
     @WithUserDetails(value = "test@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
-    void detail_forbidden_test() throws Exception {
+    void detail_test() throws Exception {
         // when
         ResultActions resultActions = mvc.perform(get("/api/user/detail/1"));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -111,5 +112,29 @@ class UserControllerTest extends DummyObject {
         // then
         resultActions.andExpect(jsonPath("$.code").value(1L));
         resultActions.andExpect(jsonPath("$.data.username").value("test@example.com"));
+    }
+
+    @WithUserDetails(value = "test@example.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    void update_test() throws Exception {
+        // given
+        UpdateRequestDto updateRequestDto = UpdateRequestDto.builder()
+                .id(1L)
+                .realname("업데이트")
+                .job("개발자")
+                .sex("male")
+                .instagramId("@update")
+                .comment("안녕하세요")
+                .deleted("N")
+                .build();
+        String requestBody = om.writeValueAsString(updateRequestDto);
+        // when
+        ResultActions resultActions = mvc.perform(
+                post("/api/user/update").content(requestBody).contentType(MediaType.APPLICATION_JSON));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("responseBody = " + responseBody);
+        // then
+        resultActions.andExpect(jsonPath("$.code").value(1L));
+        resultActions.andExpect(jsonPath("$.data.job").value("개발자"));
     }
 }
